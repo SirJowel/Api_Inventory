@@ -2,16 +2,21 @@ import express from 'express';
 import cors from 'cors'
 import dotenv from 'dotenv';
 import morgan from 'morgan';
+
 import { initializeDatabase } from './config/db';
+
 
 
 // Importar rutas
 import productRoutes from './routes/ProductRoutes';
 import categoryRoutes from './routes/CategoryRoutes';
 import userRoutes from './routes/UserRoutes';
+
+
 import accessLogStream from './middlewares/morgan';
-// import categoryRoutes from './routes/categoryRoutes';
-// import saleRoutes from './routes/saleRoutes';
+import { authenticateToken } from './middlewares/auth';
+
+
 
 // Configurar variables de entorno
 dotenv.config();
@@ -28,14 +33,22 @@ app.use(morgan('combined',{stream:accessLogStream}));
 // Servir archivos estáticos desde uploads
 app.use('/uploads', express.static('src/uploads'));
 
-
-
-
-
-// Rutas
-app.use('/api/products', productRoutes);
-app.use('/api/categories', categoryRoutes);
+// Rutas públicas (sin autenticación)
 app.use('/api/users', userRoutes);
+
+// Ruta de prueba
+app.get('/api/health', (req, res) => {
+    res.json({ 
+        success: true,
+        message: 'API del Punto de Venta funcionando correctamente',
+        timestamp: new Date().toISOString()
+    });
+});
+
+// Rutas protegidas (requieren autenticación)
+app.use('/api/products', authenticateToken, productRoutes);
+app.use('/api/categories', authenticateToken, categoryRoutes);
+
 // app.use('/api/sales', saleRoutes);
 
 // Ruta de prueba

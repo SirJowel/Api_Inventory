@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { UserService } from '../services/UserService';
+import jwt from 'jsonwebtoken';
 
 export class UserController {
     private userService: UserService;
@@ -232,6 +233,10 @@ export class UserController {
                 });
                 return;
             }
+            const token = jwt.sign({ id: user.id, email: user.email, role: user.rol },
+                 process.env.JWT_SECRET as string);
+
+            
 
             // Retornar usuario sin contraseña
             const { password_hash: _, ...userWithoutPassword } = user;
@@ -239,7 +244,8 @@ export class UserController {
             res.status(200).json({
                 success: true,
                 message: 'Login exitoso',
-                data: userWithoutPassword
+                data: userWithoutPassword,
+                token
             });
         } catch (error) {
             res.status(500).json({

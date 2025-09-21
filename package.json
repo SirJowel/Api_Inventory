@@ -22,6 +22,8 @@
     "typescript": "^5.9.2"
   },
   "dependencies": {
+    "@types/express-jwt": "^6.0.4",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/multer": "^2.0.0",
     "bcrypt": "^6.0.0",
     "class-transformer": "^0.5.1",
@@ -29,7 +31,9 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
+    "express-jwt": "^8.5.1",
     "install": "^0.13.0",
+    "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
     "pg": "^8.16.3",
