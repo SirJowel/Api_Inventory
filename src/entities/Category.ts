@@ -36,8 +36,5 @@ export class Category {
     @UpdateDateColumn()
     updatedAt!: Date;
 
-    // Método virtual para contar productos activos
-    get activeProductCount(): number {
-        return this.products?.filter(product => product.isActive).length || 0;
-    }
+   
 }

@@ -1,5 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import  { JwtPayload} from 'jsonwebtoken';
+
+import { verifyJwtToken } from '../utils/jwtUtils';
+import { redisService } from '../services/RedisService';
+
 
 // Extend Request interface to include user
 export interface AuthenticatedRequest extends Request {
@@ -11,7 +15,7 @@ export interface AuthenticatedRequest extends Request {
 }
 
 // Middleware to authenticate JWT token
-export const authenticateToken = (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
+export const authenticateToken = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
 
@@ -25,7 +29,16 @@ export const authenticateToken = (req: AuthenticatedRequest, res: Response, next
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload;
+        const isBlacklisted = await redisService.isTokenBlacklisted(token);
+        if (isBlacklisted) {
+            res.status(401).json({
+                success: false,
+                message: 'Token revocado. Inicia sesión nuevamente.',
+                data: null
+            });
+            return;
+        }
+        const decoded = verifyJwtToken(token) as JwtPayload;
         req.user = decoded;
         next();
     } catch (err) {
@@ -68,5 +81,36 @@ export const authorizeOwnerOrAdmin = (req: AuthenticatedRequest, res: Response, 
             data: null
         });
         return;
+    }
+};
+
+// Nuevo middleware para logout
+export const logoutUser = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+    try {
+        const authHeader = req.headers['authorization'];
+        const token = authHeader && authHeader.split(' ')[1];
+
+        if (token) {
+            // Decodificar token para obtener tiempo de expiración
+            const decoded =  verifyJwtToken(token) as JwtPayload;
+            const expirationTime = decoded.exp ? - Math.floor(Date.now() / 1000) : 0;
+            
+            // Agregar a blacklist solo si no ha expirado
+            if (expirationTime > 0) {
+                await redisService.addToBlacklist(token, expirationTime);
+            }
+        }
+
+        res.json({
+            success: true,
+            message: 'Sesión cerrada exitosamente',
+            data: null
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error al cerrar sesión',
+            data: null
+        });
     }
 };

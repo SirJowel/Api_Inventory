@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { UserService } from '../services/UserService';
 import jwt from 'jsonwebtoken';
+import { generateJwtToken } from '../utils/jwtUtils';
 
 export class UserController {
     private userService: UserService;
@@ -233,8 +234,7 @@ export class UserController {
                 });
                 return;
             }
-            const token = jwt.sign({ id: user.id, email: user.email, role: user.rol },
-                 process.env.JWT_SECRET as string);
+            const token = generateJwtToken({ id: user.id, email: user.email, role: user.rol });
 
             
 

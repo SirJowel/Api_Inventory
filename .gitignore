@@ -9,3 +9,5 @@ uploads/
 .idea/
 coverage/
 npm-debug.log*
+API_DOCUMENTATION.md
+TESTING.md

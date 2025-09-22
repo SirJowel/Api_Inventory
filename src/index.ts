@@ -1,10 +1,11 @@
-import express from 'express';
+import express,{Application} from 'express';
 import cors from 'cors'
 import dotenv from 'dotenv';
 import morgan from 'morgan';
+import swaggerUi from 'swagger-ui-express';
 
 import { initializeDatabase } from './config/db';
-
+import { swaggerSpec } from "./config/swagger";
 
 
 // Importar rutas
@@ -21,8 +22,9 @@ import { authenticateToken } from './middlewares/auth';
 // Configurar variables de entorno
 dotenv.config();
 
-const app = express();
+const app: Application = express();
 const PORT = process.env.PORT || 3000;
+
 
 // Middlewares
 app.use(cors());
@@ -32,6 +34,29 @@ app.use(morgan('combined',{stream:accessLogStream}));
 
 // Servir archivos estáticos desde uploads
 app.use('/uploads', express.static('src/uploads'));
+
+// Configurar Swagger UI
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+    explorer: true,
+    customCss: '.swagger-ui .topbar { display: none }',
+    customSiteTitle: "API Inventario - Documentación",
+    swaggerOptions: {
+        persistAuthorization: true,
+        displayRequestDuration: true,
+        defaultModelsExpandDepth: 1,
+        defaultModelExpandDepth: 1,
+        docExpansion: 'none',
+        filter: true,
+        showExtensions: true,
+        showCommonExtensions: true
+    }
+}));
+
+// Ruta para obtener el JSON de OpenAPI
+app.get('/api-docs.json', (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(swaggerSpec);
+});
 
 // Rutas públicas (sin autenticación)
 app.use('/api/users', userRoutes);
@@ -89,6 +114,7 @@ const startServer = async () => {
         app.listen(PORT, () => {
             console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
             console.log(`📍 API disponible en http://localhost:${PORT}/api`);
+            console.log(`📚 Documentación Swagger en http://localhost:${PORT}/api-docs`);
             console.log(`🏥 Health check en http://localhost:${PORT}/api/health`);
         });
     } catch (error) {
