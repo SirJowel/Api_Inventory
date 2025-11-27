@@ -34,6 +34,7 @@
     "typescript": "^5.9.2"
   },
   "dependencies": {
+    "@scalar/express-api-reference": "^0.8.25",
     "@types/express-jwt": "^6.0.4",
     "@types/ioredis": "^4.28.10",
     "@types/jsonwebtoken": "^9.0.10",
@@ -54,7 +55,6 @@
     "pg": "^8.16.3",
     "redis": "^5.8.2",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1",
     "ts-node-dev": "^2.0.0",
     "typeorm": "^0.3.26",
     "zod": "^4.1.11"

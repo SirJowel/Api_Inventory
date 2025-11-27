@@ -10,7 +10,7 @@ interface AuthenticatedRequest extends Request {
     };
 }
 
-export const rateLimitMiddleware = (
+export const rateLimitMiddleware = ( 
     maxRequests: number = env.RATE_LIMIT_MAX_REQUESTS,
     windowSeconds: number = env.RATE_LIMIT_WINDOW,
     keyGenerator?: (req: Request) => string

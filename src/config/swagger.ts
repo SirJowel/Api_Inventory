@@ -4,9 +4,40 @@ const swaggerOptions: swaggerJsdoc.Options = {
   definition: {
     openapi: "3.0.3",
     info: {
-      title: "Api_Inventory",
+      title: "API de Inventario",
       version: "1.0.0",
-      description: "Documentación de la API de inventario usando Swagger + OpenAPI 3.0. Esta API permite gestionar usuarios, productos y categorías con autenticación JWT y cache con Redis.",
+      description: `
+# API de Inventario y Punto de Venta
+
+API REST completa para gestión de inventario, productos, categorías y usuarios.
+
+## Características
+
+-  **Autenticación JWT** (HS256)
+-  **Cache Redis** para optimización
+-  **Gestión de Productos** y categorías
+-  **Sistema de usuarios** con roles
+-  **Upload de imágenes** con Multer
+-  **Validación** con Zod
+-  **Rate limiting** para seguridad
+
+## Autenticación
+
+Para usar los endpoints protegidos:
+
+1. Registra un usuario en \`POST /users/register\`
+2. Inicia sesión en \`POST /users/login\`
+3. Copia el token JWT recibido
+4. Click en el botón "Authorize" 🔒
+5. Ingresa: \`Bearer {tu_token}\`
+
+## Tecnologías
+
+- Node.js + Express + TypeScript
+- PostgreSQL + TypeORM
+- Redis para cache
+- JWT con HS256
+      `,
       contact: {
         name: "Joel Maldonado",
         email: "joelmaldonado@gmail.com",
@@ -19,13 +50,21 @@ const swaggerOptions: swaggerJsdoc.Options = {
     servers: [
       {
         url: "http://localhost:3000/api",
-        description: "Servidor de desarrollo",
+        description: "Servidor de desarrollo (HTTP)",
+      },
+      {
+        url: "https://localhost:3443/api",
+        description: "Servidor de desarrollo (HTTPS)",
       },
       {
         url: "https://api-inventario.herokuapp.com/api",
         description: "Servidor de producción",
       }
     ],
+    externalDocs: {
+      description: "Repositorio en GitHub",
+      url: "https://github.com/SirJowel/Api_Inventory"
+    },
     components: {
       securitySchemes: {
         bearerAuth: {

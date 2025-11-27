@@ -136,39 +136,46 @@ export const validate = <TBody = any, TParams = any, TQuery = any>(
   };
 };
 
-// File validation middleware
-export const validateFile = (
-  allowedTypes: string[] = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
-  maxSize: number = 5 * 1024 * 1024 // 5MB
-) => {
+
+export const validateFile = (schema: z.ZodSchema, required: boolean = false) => {
   return (req: Request, res: Response, next: NextFunction): void => {
-    if (!req.file) {
-      res.status(400).json({
-        success: false,
-        message: 'Archivo requerido',
-        data: null
-      });
-      return;
+    try {
+      // Si no hay archivo
+      if (!req.file) {
+        if (required) {
+          res.status(400).json({
+            success: false,
+            message: 'Archivo de imagen es requerido',
+            data: null
+          });
+          return;
+        }
+        // Si no es requerido, continuar
+        next();
+        return;
+      }
+
+      // Validar el archivo con el schema de Zod
+      const fileData = { file: req.file };
+      schema.parse(fileData);
+      
+      next();
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({
+          success: false,
+          message: 'Archivo inválido',
+          data: null,
+          errors: error.issues.map(issue => ({
+            field: issue.path.join('.'),
+            message: issue.message,
+            code: issue.code
+          }))
+        });
+        return;
+      }
+      next(error);
     }
-    
-    if (!allowedTypes.includes(req.file.mimetype)) {
-      res.status(400).json({
-        success: false,
-        message: `Tipo de archivo no permitido. Tipos permitidos: ${allowedTypes.join(', ')}`,
-        data: null
-      });
-      return;
-    }
-    
-    if (req.file.size > maxSize) {
-      res.status(400).json({
-        success: false,
-        message: `Archivo muy grande. Tamaño máximo: ${maxSize / 1024 / 1024}MB`,
-        data: null
-      });
-      return;
-    }
-    
-    next();
   };
 };
+

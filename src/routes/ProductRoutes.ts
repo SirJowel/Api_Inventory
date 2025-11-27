@@ -3,7 +3,6 @@ import { ProductController } from '../controllers/ProductController';
 import upload from '../middlewares/multer';
 import { cacheMiddleware, invalidateCache } from '../middlewares/cache';
 import { rateLimitMiddleware, strictRateLimit, normalRateLimit } from '../middlewares/rateLimit';
-import { z } from 'zod';
 import { 
   validateBody, 
   validateParams, 
@@ -14,16 +13,12 @@ import {
   updateStockSchema,
   uuidParamSchema,
   paginationSchema,
+  barcodeParamSchema,
+  fileUploadSchema,
   validateFile
 } from '../schemas';
 
-// Custom schema for barcode parameter
-const barcodeParamSchema = z.object({
-  barcode: z.string()
-    .min(1, 'Código de barras es requerido')
-    .max(50, 'Código de barras no puede exceder 50 caracteres')
-    .trim()
-});
+
 
 const router = Router();
 const productController = new ProductController();
@@ -212,7 +207,7 @@ const productController = new ProductController();
 router.post('/', 
   rateLimitMiddleware(50, 3600), // 50 productos por hora
   upload.single('image'), 
-  validateFile(['image/jpeg', 'image/png', 'image/gif', 'image/webp'], 5 * 1024 * 1024),
+  validateFile(fileUploadSchema),
   validateBody(createProductSchema),
   invalidateCache('cache:product*'), // Invalidar cache de productos
   productController.createProduct
@@ -598,5 +593,7 @@ router.patch('/:id/stock',
   invalidateCache('cache:product*'), // Invalidar cache por cambio de stock
   productController.updateStock
 );
+
+
 
 export default router;

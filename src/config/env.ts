@@ -111,5 +111,5 @@ export const getDatabaseUrl = () => {
 export const jwtConfig = {
   secret: env.JWT_SECRET,
   expiresIn: env.JWT_EXPIRES_IN,
-  algorithm: env.JWT_ALGORITHM as 'HS256' | 'HS384' | 'HS512'
+  algorithm: env.JWT_ALGORITHM 
 };

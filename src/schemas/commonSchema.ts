@@ -89,7 +89,7 @@ export const fileUploadSchema = z.object({
     buffer: z.instanceof(Buffer).optional(),
     path: z.string().optional()
   })
-});
+}).optional();
 
 // API Response schemas
 export const successResponseSchema = z.object({
@@ -145,6 +145,13 @@ export const validationOptionsSchema = z.object({
   stripUnknown: z.boolean().default(true),
   allowUnknown: z.boolean().default(false)
 });
+// Custom schema for barcode parameter
+export const barcodeParamSchema = z.object({
+  barcode: z.string()
+    .min(1, 'Código de barras es requerido')
+    .max(50, 'Código de barras no puede exceder 50 caracteres')
+    .trim()
+});
 
 // Export types
 export type IdParam = z.infer<typeof idParamSchema>;
@@ -157,3 +164,4 @@ export type SuccessResponse = z.infer<typeof successResponseSchema>;
 export type ErrorResponse = z.infer<typeof errorResponseSchema>;
 export type BulkOperationInput = z.infer<typeof bulkOperationSchema>;
 export type StatusFilterInput = z.infer<typeof statusFilterSchema>;
+export type BarcodeParam = z.infer<typeof barcodeParamSchema>;
