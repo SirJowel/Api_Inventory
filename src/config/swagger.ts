@@ -49,16 +49,16 @@ Para usar los endpoints protegidos:
     },
     servers: [
       {
+        url: "https://apiinventory-production.up.railway.app/api",
+        description: "Servidor de producción (Railway)",
+      },
+      {
         url: "http://localhost:3000/api",
         description: "Servidor de desarrollo (HTTP)",
       },
       {
         url: "https://localhost:3443/api",
         description: "Servidor de desarrollo (HTTPS)",
-      },
-      {
-        url: "https://api-inventario.herokuapp.com/api",
-        description: "Servidor de producción",
       }
     ],
     externalDocs: {

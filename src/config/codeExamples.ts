@@ -7,7 +7,7 @@ export const codeExamples = {
   // Ejemplo de registro de usuario
   registerUser: {
     javascript: `// Usando fetch API
-const response = await fetch('http://localhost:3000/api/users', {
+const response = await fetch('https://apiinventory-production.up.railway.app/api/users', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json'
@@ -38,7 +38,7 @@ interface ApiResponse<T> {
 }
 
 async function registerUser(userData: CreateUserDto) {
-  const response = await fetch('http://localhost:3000/api/users', {
+  const response = await fetch('https://apiinventory-production.up.railway.app/api/users', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -53,7 +53,7 @@ async function registerUser(userData: CreateUserDto) {
     python: `# Usando requests
 import requests
 
-url = 'http://localhost:3000/api/users'
+url = 'https://apiinventory-production.up.railway.app/api/users'
 data = {
     'nombre': 'Juan Pérez',
     'email': 'juan@example.com',
@@ -64,7 +64,7 @@ data = {
 response = requests.post(url, json=data)
 print(response.json())`,
 
-    curl: `curl -X POST http://localhost:3000/api/users \\
+    curl: `curl -X POST https://apiinventory-production.up.railway.app/api/users \\
   -H "Content-Type: application/json" \\
   -d '{
     "nombre": "Juan Pérez",
@@ -75,7 +75,7 @@ print(response.json())`,
 
     php: `<?php
 // Usando cURL
-$url = 'http://localhost:3000/api/users';
+$url = 'https://apiinventory-production.up.railway.app/api/users';
 $data = [
     'nombre' => 'Juan Pérez',
     'email' => 'juan@example.com',
@@ -112,7 +112,7 @@ String json = """
 """;
 
 HttpRequest request = HttpRequest.newBuilder()
-    .uri(URI.create("http://localhost:3000/api/users"))
+    .uri(URI.create("https://apiinventory-production.up.railway.app/api/users"))
     .header("Content-Type", "application/json")
     .POST(HttpRequest.BodyPublishers.ofString(json))
     .build();
@@ -140,7 +140,7 @@ var json = JsonSerializer.Serialize(userData);
 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
 var response = await client.PostAsync(
-    "http://localhost:3000/api/users", 
+    "https://apiinventory-production.up.railway.app/api/users", 
     content
 );
 
@@ -158,7 +158,7 @@ import (
 )
 
 func main() {
-    url := "http://localhost:3000/api/users"
+    url := "https://apiinventory-production.up.railway.app/api/users"
     
     data := map[string]string{
         "nombre":   "Juan Pérez",
@@ -185,7 +185,7 @@ func main() {
 require 'net/http'
 require 'json'
 
-uri = URI('http://localhost:3000/api/users')
+uri = URI('https://apiinventory-production.up.railway.app/api/users')
 http = Net::HTTP.new(uri.host, uri.port)
 
 request = Net::HTTP::Post.new(uri.path)
@@ -204,7 +204,7 @@ puts JSON.parse(response.body)`
   // Ejemplo de login
   login: {
     javascript: `// Login y guardar token
-const response = await fetch('http://localhost:3000/api/users/login', {
+const response = await fetch('https://apiinventory-production.up.railway.app/api/users/login', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json'
@@ -232,7 +232,7 @@ interface AuthResponse {
 }
 
 async function login(credentials: LoginDto): Promise<AuthResponse> {
-  const response = await fetch('http://localhost:3000/api/users/login', {
+  const response = await fetch('https://apiinventory-production.up.railway.app/api/users/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -254,7 +254,7 @@ async function login(credentials: LoginDto): Promise<AuthResponse> {
     python: `# Login con Python
 import requests
 
-url = 'http://localhost:3000/api/users/login'
+url = 'https://apiinventory-production.up.railway.app/api/users/login'
 credentials = {
     'email': 'juan@example.com',
     'password': 'Password123!'
@@ -271,7 +271,7 @@ if result['success']:
         f.write(token)`,
 
     curl: `# Login y extraer token con jq
-curl -X POST http://localhost:3000/api/users/login \\
+curl -X POST https://apiinventory-production.up.railway.app/api/users/login \\
   -H "Content-Type: application/json" \\
   -d '{
     "email": "juan@example.com",
@@ -284,7 +284,7 @@ curl -X POST http://localhost:3000/api/users/login \\
     javascript: `// Obtener productos con autenticación
 const token = localStorage.getItem('token');
 
-const response = await fetch('http://localhost:3000/api/products?page=1&limit=10', {
+const response = await fetch('https://apiinventory-production.up.railway.app/api/products?page=1&limit=10', {
   method: 'GET',
   headers: {
     'Authorization': \`Bearer \${token}\`,
@@ -320,7 +320,7 @@ async function getProducts(
   const token = localStorage.getItem('authToken');
   
   const response = await fetch(
-    \`http://localhost:3000/api/products?page=\${page}&limit=\${limit}\`,
+    \`https://apiinventory-production.up.railway.app/api/products?page=\${page}&limit=\${limit}\`,
     {
       headers: {
         'Authorization': \`Bearer \${token}\`,
@@ -340,7 +340,7 @@ import requests
 with open('token.txt', 'r') as f:
     token = f.read().strip()
 
-url = 'http://localhost:3000/api/products'
+url = 'https://apiinventory-production.up.railway.app/api/products'
 headers = {
     'Authorization': f'Bearer {token}',
     'Content-Type': 'application/json'
@@ -359,7 +359,7 @@ for product in products['items']:
     curl: `# Obtener productos con token
 TOKEN="tu_token_jwt_aqui"
 
-curl -X GET "http://localhost:3000/api/products?page=1&limit=10" \\
+curl -X GET "https://apiinventory-production.up.railway.app/api/products?page=1&limit=10" \\
   -H "Authorization: Bearer $TOKEN" \\
   -H "Content-Type: application/json"`
   },
@@ -381,7 +381,7 @@ formData.append('categoryId', 'uuid-de-categoria');
 const fileInput = document.querySelector('#imageInput');
 formData.append('image', fileInput.files[0]);
 
-const response = await fetch('http://localhost:3000/api/products', {
+const response = await fetch('https://apiinventory-production.up.railway.app/api/products', {
   method: 'POST',
   headers: {
     'Authorization': \`Bearer \${token}\`
@@ -399,7 +399,7 @@ import requests
 with open('token.txt', 'r') as f:
     token = f.read().strip()
 
-url = 'http://localhost:3000/api/products'
+url = 'https://apiinventory-production.up.railway.app/api/products'
 headers = {
     'Authorization': f'Bearer {token}'
 }
@@ -423,7 +423,7 @@ result = response.json()
 print('Producto creado:', result['data'])`,
 
     curl: `# Crear producto con imagen usando curl
-curl -X POST http://localhost:3000/api/products \\
+curl -X POST https://apiinventory-production.up.railway.app/api/products \\
   -H "Authorization: Bearer $TOKEN" \\
   -F "name=Laptop HP" \\
   -F "description=Laptop HP 15.6\\" Intel Core i5" \\
