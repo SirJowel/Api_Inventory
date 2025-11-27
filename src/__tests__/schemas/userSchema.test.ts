@@ -18,7 +18,7 @@ describe('User Schemas', () => {
       // Assert
       expect(result.success).toBe(true);
       if (result.success) {
-        expect(result.data.nombre).toBe('Test User');
+        expect(result.data.name).toBe('Test User');
         expect(result.data.email).toBe('test@example.com');
         expect(result.data.rol).toBe('user');
       }
