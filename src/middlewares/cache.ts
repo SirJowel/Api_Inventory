@@ -53,8 +53,13 @@ export const invalidateCache = (pattern: string) => {
 };
 
 async function invalidateCachePattern(pattern: string): Promise<void> {
+    const client = redisService.getClient();
+    if (!client) {
+        console.warn('⚠️  Redis client not available for cache invalidation');
+        return;
+    }
+    
     try {
-        const client = redisService.getClient();
         const keys = await client.keys(pattern);
         if (keys.length > 0) {
             await client.del(...keys);

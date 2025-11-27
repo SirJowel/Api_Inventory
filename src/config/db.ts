@@ -18,7 +18,7 @@ export const AppDataSource = new DataSource({
     username: process.env.DB_USER || 'postgres',
     password: process.env.DB_PASSWORD || 'jowel1234',
     database: process.env.DB_NAME || 'inventory',
-    synchronize:false, // Solo en desarrollo
+    synchronize: process.env.NODE_ENV === 'development', // true en desarrollo, false en producción
     logging: process.env.NODE_ENV === 'development',
     entities: [
         Product,
