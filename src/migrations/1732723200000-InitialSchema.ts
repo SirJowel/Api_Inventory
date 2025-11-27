@@ -11,8 +11,10 @@ export class InitialSchema1732723200000 implements MigrationInterface {
         await queryRunner.query(`
             CREATE TABLE IF NOT EXISTS "categories" (
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-                "name" character varying(100) NOT NULL,
+                "name" character varying(255) NOT NULL,
                 "description" text,
+                "color" character varying(7) NOT NULL DEFAULT '#6366f1',
+                "isActive" boolean NOT NULL DEFAULT true,
                 "createdAt" TIMESTAMP NOT NULL DEFAULT now(),
                 "updatedAt" TIMESTAMP NOT NULL DEFAULT now(),
                 CONSTRAINT "PK_categories" PRIMARY KEY ("id"),
@@ -24,15 +26,20 @@ export class InitialSchema1732723200000 implements MigrationInterface {
         await queryRunner.query(`
             CREATE TABLE IF NOT EXISTS "products" (
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-                "name" character varying(200) NOT NULL,
+                "name" character varying(255) NOT NULL,
                 "description" text,
+                "barcode" character varying(50) NOT NULL,
                 "price" numeric(10,2) NOT NULL,
+                "cost" numeric(10,2) NOT NULL DEFAULT '0',
                 "stock" integer NOT NULL DEFAULT '0',
-                "imageUrl" character varying(500),
+                "minStock" integer NOT NULL DEFAULT '0',
+                "isActive" boolean NOT NULL DEFAULT true,
+                "image" character varying(255),
                 "categoryId" uuid,
                 "createdAt" TIMESTAMP NOT NULL DEFAULT now(),
                 "updatedAt" TIMESTAMP NOT NULL DEFAULT now(),
-                CONSTRAINT "PK_products" PRIMARY KEY ("id")
+                CONSTRAINT "PK_products" PRIMARY KEY ("id"),
+                CONSTRAINT "UQ_products_barcode" UNIQUE ("barcode")
             )
         `);
 
@@ -64,6 +71,7 @@ export class InitialSchema1732723200000 implements MigrationInterface {
         // Crear índices para mejorar rendimiento
         await queryRunner.query(`CREATE INDEX IF NOT EXISTS "IDX_products_categoryId" ON "products" ("categoryId")`);
         await queryRunner.query(`CREATE INDEX IF NOT EXISTS "IDX_products_name" ON "products" ("name")`);
+        await queryRunner.query(`CREATE INDEX IF NOT EXISTS "IDX_products_barcode" ON "products" ("barcode")`);
         await queryRunner.query(`CREATE INDEX IF NOT EXISTS "IDX_categories_name" ON "categories" ("name")`);
         await queryRunner.query(`CREATE INDEX IF NOT EXISTS "IDX_users_email" ON "users" ("email")`);
     }
