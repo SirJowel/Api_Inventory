@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 // Base user schema with common validations
 const baseUserSchema = z.object({
-  nombre: z.string()
+  name: z.string()
     .min(2, 'Nombre debe tener al menos 2 caracteres')
     .max(255, 'Nombre no puede exceder 255 caracteres')
     .trim(),
@@ -68,7 +68,7 @@ export const changePasswordSchema = z.object({
 // User response schema (without password)
 export const userResponseSchema = z.object({
   id: z.number(),
-  nombre: z.string(),
+  name: z.string(),
   email: z.string().email(),
   rol: z.string(),
   fecha_creacion: z.date(),
