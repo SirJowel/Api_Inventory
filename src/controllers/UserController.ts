@@ -69,7 +69,7 @@ export class UserController {
                 return;
             }
 
-            const user = await this.userService.getUserById(Number(id));
+            const user = await this.userService.getUserById(id);
             
             if (!user) {
                 res.status(404).json({
@@ -107,7 +107,7 @@ export class UserController {
                 return;
             }
 
-            const user = await this.userService.updateUser(Number(id), req.body);
+            const user = await this.userService.updateUser(id, req.body);
             
             if (!user) {
                 res.status(404).json({
@@ -145,7 +145,7 @@ export class UserController {
                 return;
             }
 
-            const deleted = await this.userService.deleteUser(Number(id));
+            const deleted = await this.userService.deleteUser(id);
             
             if (!deleted) {
                 res.status(404).json({
@@ -224,7 +224,7 @@ export class UserController {
                 return;
             }
 
-            const isValidPassword = await this.userService.verifyPassword(password, user.password_hash);
+            const isValidPassword = await this.userService.verifyPassword(password, user.password);
             
             if (!isValidPassword) {
                 res.status(401).json({
@@ -234,12 +234,12 @@ export class UserController {
                 });
                 return;
             }
-            const token = generateJwtToken({ id: user.id, email: user.email, role: user.rol });
+            const token = generateJwtToken({ id: user.id, email: user.email, role: user.role });
 
             
 
             // Retornar usuario sin contraseña
-            const { password_hash: _, ...userWithoutPassword } = user;
+            const { password: _, ...userWithoutPassword } = user;
             
             res.status(200).json({
                 success: true,

@@ -18,7 +18,7 @@ describe('JWT Utils', () => {
     it('should generate a valid JWT token', () => {
       // Arrange
       const payload = {
-        id: 1,
+        id: '550e8400-e29b-41d4-a716-446655440000',
         email: 'test@example.com',
         role: 'user'
       };
@@ -34,8 +34,8 @@ describe('JWT Utils', () => {
 
     it('should generate different tokens for different payloads', () => {
       // Arrange
-      const payload1 = { id: 1, email: 'user1@example.com', role: 'user' };
-      const payload2 = { id: 2, email: 'user2@example.com', role: 'admin' };
+      const payload1 = { id: '550e8400-e29b-41d4-a716-446655440001', email: 'user1@example.com', role: 'user' };
+      const payload2 = { id: '550e8400-e29b-41d4-a716-446655440002', email: 'user2@example.com', role: 'admin' };
 
       // Act
       const token1 = generateJwtToken(payload1);
@@ -52,7 +52,7 @@ describe('JWT Utils', () => {
     it('should verify a valid token and return payload', () => {
       // Arrange
       const payload = {
-        id: 1,
+        id: '550e8400-e29b-41d4-a716-446655440000',
         email: 'test@example.com',
         role: 'user'
       };
@@ -94,7 +94,7 @@ describe('JWT Utils', () => {
     it('should generate and verify token successfully', () => {
       // Arrange
       const originalPayload = {
-        id: 999,
+        id: '550e8400-e29b-41d4-a716-446655440999',
         email: 'roundtrip@example.com',
         role: 'admin'
       };
@@ -115,7 +115,7 @@ describe('JWT Utils', () => {
 
       for (const role of roles) {
         const payload = {
-          id: 123,
+          id: '550e8400-e29b-41d4-a716-446655440123',
           email: `test-${role}@example.com`,
           role
         };

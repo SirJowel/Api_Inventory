@@ -88,10 +88,10 @@ beforeEach(async () => {
 export const createTestUser = async () => {
   const userRepository = testDataSource.getRepository(User);
   const user = userRepository.create({
-    nombre: 'Test User',
+    name: 'Test User',
     email: 'test@example.com',
-    password_hash: '$2b$10$hash', // Password hasheado mock
-    rol: 'user'
+    password: '$2b$10$hash', // Password hasheado mock
+    role: 'user'
   });
   return await userRepository.save(user);
 };

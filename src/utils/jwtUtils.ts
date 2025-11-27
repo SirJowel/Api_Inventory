@@ -10,7 +10,7 @@ console.log('✅ JWT configurado con HS256 (secret key)');
 
 // Interface para el payload del JWT
 export interface JwtTokenPayload {
-  id: number;
+  id: string;
   email: string;
   role: string;
 }

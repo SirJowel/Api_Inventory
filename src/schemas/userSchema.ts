@@ -67,11 +67,11 @@ export const changePasswordSchema = z.object({
 
 // User response schema (without password)
 export const userResponseSchema = z.object({
-  id: z.number(),
+  id: z.string().uuid(),
   name: z.string(),
   email: z.string().email(),
-  rol: z.string(),
-  fecha_creacion: z.date(),
+  role: z.string(),
+  createdAt: z.date(),
   updatedAt: z.date()
 });
 

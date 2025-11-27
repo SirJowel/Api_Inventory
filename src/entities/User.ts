@@ -8,23 +8,23 @@ import {
 
 @Entity('users')
 export class User {
-    @PrimaryGeneratedColumn()
-    id!: number;
+    @PrimaryGeneratedColumn('uuid')
+    id!: string;
 
-    @Column({ type: 'varchar', length: 255 })
-    nombre!: string;
+    @Column({ type: 'varchar', length: 100 })
+    name!: string;
 
-    @Column({ type: 'varchar', length: 255, unique: true })
+    @Column({ type: 'varchar', length: 150, unique: true })
     email!: string;
 
-    @Column({ type: 'varchar', length: 50, default: 'user' })
-    rol!: string;
-
     @Column({ type: 'varchar', length: 255 })
-    password_hash!: string;
+    password!: string;
+
+    @Column({ type: 'varchar', length: 20, default: 'user' })
+    role!: string;
 
     @CreateDateColumn()
-    fecha_creacion!: Date;
+    createdAt!: Date;
 
     @UpdateDateColumn()
     updatedAt!: Date;

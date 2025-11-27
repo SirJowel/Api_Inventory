@@ -13,7 +13,7 @@ export class UserService {
     }
 
     // Crear un nuevo usuario
-    async createUser(userData: CreateUserDto): Promise<Omit<User, 'password_hash'>> {
+    async createUser(userData: CreateUserDto): Promise<Omit<User, 'password'>> {
         try {
             // Verificar si el email ya existe
             const existingUser = await this.userRepository.findOne({
@@ -26,17 +26,19 @@ export class UserService {
 
             // Hash de la contraseña
             const saltRounds = 10;
-            const password_hash = await bcrypt.hash(userData.password, saltRounds);
+            const hashedPassword = await bcrypt.hash(userData.password, saltRounds);
 
             const user = this.userRepository.create({
-                ...userData,
-                password_hash
+                name: userData.name,
+                email: userData.email,
+                role: userData.rol || 'user',
+                password: hashedPassword
             });
 
             const savedUser = await this.userRepository.save(user);
             
             // Retornar usuario sin el hash de la contraseña
-            const { password_hash: _, ...userWithoutPassword } = savedUser;
+            const { password: _, ...userWithoutPassword } = savedUser;
             return userWithoutPassword;
         } catch (error) {
             if (error instanceof Error) {
@@ -48,16 +50,16 @@ export class UserService {
 
     // Obtener todos los usuarios con paginación
     async getAllUsers(page: number = 1, limit: number = 10): Promise<{
-        users: Omit<User, 'password_hash'>[],
+        users: Omit<User, 'password'>[],
         total: number,
         pages: number
     }> {
         try {
             const [users, total] = await this.userRepository.findAndCount({
-                select: ['id', 'nombre', 'email', 'rol', 'fecha_creacion', 'updatedAt'],
+                select: ['id', 'name', 'email', 'role', 'createdAt', 'updatedAt'],
                 skip: (page - 1) * limit,
                 take: limit,
-                order: { fecha_creacion: 'DESC' }
+                order: { createdAt: 'DESC' }
             });
 
             return {
@@ -74,11 +76,11 @@ export class UserService {
     }
 
     // Obtener usuario por ID
-    async getUserById(id: number): Promise<Omit<User, 'password_hash'> | null> {
+    async getUserById(id: string): Promise<Omit<User, 'password'> | null> {
         try {
             const user = await this.userRepository.findOne({
                 where: { id },
-                select: ['id', 'nombre', 'email', 'rol', 'fecha_creacion', 'updatedAt']
+                select: ['id', 'name', 'email', 'role', 'createdAt', 'updatedAt']
             });
 
             return user;
@@ -105,7 +107,7 @@ export class UserService {
     }
 
     // Actualizar usuario
-    async updateUser(id: number, updateData: UpdateUserDto): Promise<Omit<User, 'password_hash'> | null> {
+    async updateUser(id: string, updateData: UpdateUserDto): Promise<Omit<User, 'password'> | null> {
         try {
             const user = await this.userRepository.findOne({ where: { id } });
             if (!user) {
@@ -123,11 +125,14 @@ export class UserService {
             }
 
             // Si se actualiza la contraseña, hashearla
-            const updateDataToSave: any = { ...updateData };
+            const updateDataToSave: any = {};
+            if (updateData.name) updateDataToSave.name = updateData.name;
+            if (updateData.email) updateDataToSave.email = updateData.email;
+            if (updateData.rol) updateDataToSave.role = updateData.rol;
+            
             if (updateData.password) {
                 const saltRounds = 10;
-                updateDataToSave.password_hash = await bcrypt.hash(updateData.password, saltRounds);
-                delete updateDataToSave.password;
+                updateDataToSave.password = await bcrypt.hash(updateData.password, saltRounds);
             }
 
             await this.userRepository.update(id, updateDataToSave);
@@ -141,7 +146,7 @@ export class UserService {
     }
 
     // Eliminar usuario
-    async deleteUser(id: number): Promise<boolean> {
+    async deleteUser(id: string): Promise<boolean> {
         try {
             const result = await this.userRepository.delete(id);
             return (typeof result.affected === 'number' && result.affected > 0);
@@ -166,12 +171,12 @@ export class UserService {
     }
 
     // Obtener usuarios por rol
-    async getUsersByRole(rol: string): Promise<Omit<User, 'password_hash'>[]> {
+    async getUsersByRole(rol: string): Promise<Omit<User, 'password'>[]> {
         try {
             return await this.userRepository.find({
-                where: { rol },
-                select: ['id', 'nombre', 'email', 'rol', 'fecha_creacion', 'updatedAt'],
-                order: { nombre: 'ASC' }
+                where: { role: rol },
+                select: ['id', 'name', 'email', 'role', 'createdAt', 'updatedAt'],
+                order: { name: 'ASC' }
             });
         } catch (error) {
             if (error instanceof Error) {
