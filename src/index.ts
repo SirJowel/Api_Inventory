@@ -14,7 +14,7 @@ import categoryRoutes from './routes/CategoryRoutes';
 import userRoutes from './routes/UserRoutes';
 
 
-import accessLogStream from './middlewares/morgan';
+import morganMiddleware from './middlewares/morgan';
 import { authenticateToken } from './middlewares/auth';
 import { errorHandler, notFoundHandler } from './middlewares/errorHandler';
 
@@ -31,7 +31,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(morgan('combined',{stream:accessLogStream}));
+app.use(morganMiddleware);
 
 // Servir archivos estáticos desde uploads
 app.use('/uploads', express.static('src/uploads'));
