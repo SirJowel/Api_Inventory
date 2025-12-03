@@ -231,7 +231,7 @@ export class ProductController {
     updateStock = async (req: Request, res: Response): Promise<void> => {
         try {
             const { id } = req.params;
-            const { quantity, operation } = req.body;
+            const { stock, operation } = req.body;
 
             if (!id) {
                 res.status(400).json({
@@ -241,16 +241,16 @@ export class ProductController {
                 });
                 return;
             }
-            if (!quantity || !operation || !['add', 'subtract'].includes(operation)) {
+            if (stock === undefined || !operation || !['add', 'subtract', 'set'].includes(operation)) {
                 res.status(400).json({
                     success: false,
-                    message: 'Cantidad y operación requeridas. Operación debe ser "add" o "subtract"',
+                    message: 'Stock y operación requeridas. Operación debe ser "add", "subtract" o "set"',
                     data: null
                 });
                 return;
             }
 
-            const product = await this.productService.updateStock(String(id), quantity, operation);
+            const product = await this.productService.updateStock(String(id), stock, operation);
             
             res.status(200).json({
                 success: true,

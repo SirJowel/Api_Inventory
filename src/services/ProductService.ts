@@ -174,19 +174,31 @@ export class ProductService {
     }
 
     // Actualizar stock del producto
-    async updateStock(id: string, quantity: number, operation: 'add' | 'subtract'): Promise<Product | null> {
+    async updateStock(id: string, stock: number, operation: 'add' | 'subtract' | 'set'): Promise<Product | null> {
         try {
             const product = await this.productRepository.findOne({ where: { id } });
             if (!product) {
                 throw new Error('Producto no encontrado');
             }
 
-            const newStock = operation === 'add' 
-                ? product.stock + quantity 
-                : product.stock - quantity;
+            let newStock: number;
+            
+            switch (operation) {
+                case 'add':
+                    newStock = product.stock + stock;
+                    break;
+                case 'subtract':
+                    newStock = product.stock - stock;
+                    break;
+                case 'set':
+                    newStock = stock;
+                    break;
+                default:
+                    throw new Error('Operación inválida');
+            }
 
             if (newStock < 0) {
-                throw new Error('Stock insuficiente');
+                throw new Error('Stock insuficiente. El stock resultante no puede ser negativo');
             }
 
             product.stock = newStock;
