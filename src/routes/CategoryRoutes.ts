@@ -39,11 +39,13 @@ const categoryController = new CategoryController();
  *               value:
  *                 name: "Electrónicos"
  *                 description: "Productos electrónicos y tecnológicos"
+ *                 color: "#6366f1"
  *             clothing:
  *               summary: Categoría de ropa
  *               value:
  *                 name: "Ropa"
  *                 description: "Prendas de vestir y accesorios"
+ *                 color: "#ec4899"
  *             minimal:
  *               summary: Solo nombre requerido
  *               value:
@@ -67,6 +69,7 @@ const categoryController = new CategoryController();
  *                 id: "123e4567-e89b-12d3-a456-426614174000"
  *                 name: "Electrónicos"
  *                 description: "Productos electrónicos y tecnológicos"
+ *                 color: "#6366f1"
  *                 isActive: true
  *                 createdAt: "2025-09-21T10:30:00Z"
  *                 updatedAt: "2025-09-21T10:30:00Z"
@@ -295,11 +298,16 @@ router.get('/active',
  *               summary: Actualizar descripción
  *               value:
  *                 description: "Productos electrónicos, gadgets y accesorios tecnológicos"
+ *             update_color:
+ *               summary: Actualizar color
+ *               value:
+ *                 color: "#0ea5e9"
  *             full_update:
  *               summary: Actualización completa
  *               value:
  *                 name: "Electrónicos y Tecnología"
  *                 description: "Productos electrónicos, gadgets y accesorios tecnológicos modernos"
+ *                 color: "#6366f1"
  *     responses:
  *       200:
  *         description: Categoría actualizada exitosamente

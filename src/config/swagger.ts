@@ -84,7 +84,7 @@ Para usar los endpoints protegidos:
               format: "uuid",
               description: "ID único del usuario"
             },
-            nombre: {
+            name: {
               type: "string",
               description: "Nombre del usuario",
               example: "Juan Pérez"
@@ -95,9 +95,9 @@ Para usar los endpoints protegidos:
               description: "Email del usuario",
               example: "juan@example.com"
             },
-            rol: {
+            role: {
               type: "string",
-              enum: ["admin", "editor", "user"],
+              enum: ["admin", "manager", "user"],
               description: "Rol del usuario",
               example: "user"
             },
@@ -120,9 +120,9 @@ Para usar los endpoints protegidos:
         },
         CreateUserDto: {
           type: "object",
-          required: ["nombre", "email", "password"],
+          required: ["name", "email", "password"],
           properties: {
-            nombre: {
+            name: {
               type: "string",
               minLength: 2,
               maxLength: 255,
@@ -138,13 +138,13 @@ Para usar los endpoints protegidos:
             },
             password: {
               type: "string",
-              minLength: 6,
-              description: "Contraseña del usuario",
+              minLength: 8,
+              description: "Contraseña del usuario (mínimo 8 caracteres, debe contener mayúscula, minúscula y número)",
               example: "Password123!"
             },
             rol: {
               type: "string",
-              enum: ["admin", "editor", "user"],
+              enum: ["admin", "manager", "user"],
               description: "Rol del usuario (opcional, por defecto 'user')",
               example: "user"
             }
@@ -153,7 +153,7 @@ Para usar los endpoints protegidos:
         UpdateUserDto: {
           type: "object",
           properties: {
-            nombre: {
+            name: {
               type: "string",
               minLength: 2,
               maxLength: 255,
@@ -169,9 +169,15 @@ Para usar los endpoints protegidos:
             },
             rol: {
               type: "string",
-              enum: ["admin", "editor", "user"],
+              enum: ["admin", "manager", "user"],
               description: "Rol del usuario",
               example: "user"
+            },
+            password: {
+              type: "string",
+              minLength: 8,
+              description: "Nueva contraseña (opcional, mínimo 8 caracteres)",
+              example: "NewPassword123!"
             }
           }
         },
@@ -211,6 +217,12 @@ Para usar los endpoints protegidos:
               description: "Descripción de la categoría",
               example: "Productos electrónicos y tecnológicos"
             },
+            color: {
+              type: "string",
+              pattern: "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$",
+              description: "Color de la categoría en formato hexadecimal",
+              example: "#6366f1"
+            },
             isActive: {
               type: "boolean",
               description: "Estado de la categoría",
@@ -234,16 +246,22 @@ Para usar los endpoints protegidos:
           properties: {
             name: {
               type: "string",
-              minLength: 2,
+              minLength: 1,
               maxLength: 255,
               description: "Nombre de la categoría",
               example: "Electrónicos"
             },
             description: {
               type: "string",
-              maxLength: 500,
-              description: "Descripción de la categoría",
+              maxLength: 1000,
+              description: "Descripción de la categoría (opcional)",
               example: "Productos electrónicos y tecnológicos"
+            },
+            color: {
+              type: "string",
+              pattern: "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$",
+              description: "Color de la categoría en formato hexadecimal (opcional, por defecto #6366f1)",
+              example: "#6366f1"
             }
           }
         },
@@ -252,16 +270,22 @@ Para usar los endpoints protegidos:
           properties: {
             name: {
               type: "string",
-              minLength: 2,
+              minLength: 1,
               maxLength: 255,
               description: "Nombre de la categoría",
               example: "Electrónicos"
             },
             description: {
               type: "string",
-              maxLength: 500,
+              maxLength: 1000,
               description: "Descripción de la categoría",
               example: "Productos electrónicos y tecnológicos"
+            },
+            color: {
+              type: "string",
+              pattern: "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$",
+              description: "Color de la categoría en formato hexadecimal",
+              example: "#6366f1"
             }
           }
         },
@@ -274,11 +298,12 @@ Para usar los endpoints protegidos:
               format: "uuid",
               description: "ID único del producto"
             },
-            name: {
-              type: "string",
-              description: "Nombre del producto",
-              example: "iPhone 14 Pro"
-            },
+              name: {
+                type: "string",
+                minLength: 1,
+                description: "Nombre del producto",
+                example: "iPhone 14 Pro"
+              },
             description: {
               type: "string",
               description: "Descripción del producto",
@@ -287,25 +312,37 @@ Para usar los endpoints protegidos:
             price: {
               type: "number",
               format: "float",
-              minimum: 0,
-              description: "Precio del producto",
+              minimum: 0.01,
+              maximum: 999999.99,
+              description: "Precio de venta del producto (debe ser mayor al costo)",
               example: 999.99
+            },
+            cost: {
+              type: "number",
+              format: "float",
+              minimum: 0,
+              maximum: 999999.99,
+              description: "Costo del producto",
+              example: 699.99
             },
             stock: {
               type: "integer",
               minimum: 0,
+              maximum: 999999,
               description: "Cantidad en stock",
               example: 50
             },
             minStock: {
               type: "integer",
               minimum: 0,
+              maximum: 999999,
               description: "Stock mínimo requerido",
               example: 10
             },
             barcode: {
               type: "string",
-              description: "Código de barras del producto",
+              maxLength: 50,
+              description: "Código de barras del producto (solo mayúsculas y números)",
               example: "1234567890123"
             },
             image: {
@@ -340,11 +377,11 @@ Para usar los endpoints protegidos:
         },
         CreateProductDto: {
           type: "object",
-          required: ["name", "price", "stock", "barcode"],
+          required: ["name", "price", "barcode"],
           properties: {
             name: {
               type: "string",
-              minLength: 2,
+                minLength: 1,
               maxLength: 255,
               description: "Nombre del producto",
               example: "iPhone 14 Pro"
@@ -358,24 +395,36 @@ Para usar los endpoints protegidos:
             price: {
               type: "number",
               format: "float",
-              minimum: 0,
-              description: "Precio del producto",
+              minimum: 0.01,
+              maximum: 999999.99,
+              description: "Precio de venta del producto (debe ser mayor al costo)",
               example: 999.99
+            },
+            cost: {
+              type: "number",
+              format: "float",
+              minimum: 0,
+              maximum: 999999.99,
+              description: "Costo del producto (opcional, por defecto 0)",
+              example: 699.99
             },
             stock: {
               type: "integer",
               minimum: 0,
-              description: "Cantidad en stock",
+              maximum: 999999,
+              description: "Cantidad en stock (opcional, por defecto 0)",
               example: 50
             },
             minStock: {
               type: "integer",
               minimum: 0,
+              maximum: 999999,
               description: "Stock mínimo requerido (opcional, por defecto 0)",
               example: 10
             },
             barcode: {
               type: "string",
+              maxLength: 50,
               description: "Código de barras del producto",
               example: "1234567890123"
             },
@@ -391,7 +440,7 @@ Para usar los endpoints protegidos:
           properties: {
             name: {
               type: "string",
-              minLength: 2,
+                minLength: 1,
               maxLength: 255,
               description: "Nombre del producto",
               example: "iPhone 14 Pro"
@@ -405,24 +454,36 @@ Para usar los endpoints protegidos:
             price: {
               type: "number",
               format: "float",
-              minimum: 0,
-              description: "Precio del producto",
+              minimum: 0.01,
+              maximum: 999999.99,
+              description: "Precio de venta del producto (debe ser mayor al costo)",
               example: 999.99
+            },
+            cost: {
+              type: "number",
+              format: "float",
+              minimum: 0,
+              maximum: 999999.99,
+              description: "Costo del producto",
+              example: 699.99
             },
             stock: {
               type: "integer",
               minimum: 0,
+              maximum: 999999,
               description: "Cantidad en stock",
               example: 50
             },
             minStock: {
               type: "integer",
               minimum: 0,
+              maximum: 999999,
               description: "Stock mínimo requerido",
               example: 10
             },
             barcode: {
               type: "string",
+              maxLength: 50,
               description: "Código de barras del producto",
               example: "1234567890123"
             },

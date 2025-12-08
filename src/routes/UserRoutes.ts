@@ -38,14 +38,14 @@ const userController = new UserController();
  *                 name: "Juan Pérez"
  *                 email: "juan@example.com"
  *                 password: "Password123!"
- *                 role: "user"
+ *                 rol: "user"
  *             admin_example:
  *               summary: Ejemplo de administrador
  *               value:
  *                 name: "Admin User"
  *                 email: "admin@example.com"
  *                 password: "AdminPass123!"
- *                 role: "admin"
+ *                 rol: "admin"
  *     responses:
  *       201:
  *         description: Usuario creado exitosamente
@@ -407,13 +407,13 @@ router.get('/role/:rol',
  *             update_role:
  *               summary: Actualizar rol (solo admin)
  *               value:
- *                 role: "editor"
+ *                 rol: "manager"
  *             full_update:
  *               summary: Actualización completa
  *               value:
  *                 name: "Juan Carlos Pérez"
  *                 email: "juan.carlos@example.com"
- *                 role: "editor"
+ *                 rol: "manager"
  *     responses:
  *       200:
  *         description: Usuario actualizado exitosamente
@@ -433,7 +433,7 @@ router.get('/role/:rol',
  *                 id: "123e4567-e89b-12d3-a456-426614174000"
  *                 name: "Juan Carlos Pérez"
  *                 email: "juan.carlos@example.com"
- *                 role: "editor"
+ *                 role: "manager"
  *                 isActive: true
  *                 createdAt: "2025-09-21T10:30:00Z"
  *                 updatedAt: "2025-09-21T12:45:00Z"

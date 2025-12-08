@@ -42,12 +42,11 @@ const productController = new ProductController();
  *             required:
  *               - name
  *               - price
- *               - stock
  *               - barcode
  *             properties:
  *               name:
  *                 type: string
- *                 minLength: 2
+ *                 minLength: 1
  *                 maxLength: 255
  *                 description: Nombre del producto
  *                 example: "iPhone 14 Pro"
@@ -59,21 +58,32 @@ const productController = new ProductController();
  *               price:
  *                 type: number
  *                 format: float
- *                 minimum: 0
- *                 description: Precio del producto
+ *                 minimum: 0.01
+ *                 maximum: 999999.99
+ *                 description: Precio de venta del producto (debe ser mayor al costo)
  *                 example: 999.99
+ *               cost:
+ *                 type: number
+ *                 format: float
+ *                 minimum: 0
+ *                 maximum: 999999.99
+ *                 description: Costo del producto (opcional, por defecto 0)
+ *                 example: 699.99
  *               stock:
  *                 type: integer
  *                 minimum: 0
- *                 description: Cantidad en stock
+ *                 maximum: 999999
+ *                 description: Cantidad en stock (opcional, por defecto 0)
  *                 example: 50
  *               minStock:
  *                 type: integer
  *                 minimum: 0
+ *                 maximum: 999999
  *                 description: Stock mínimo requerido
  *                 example: 10
  *               barcode:
  *                 type: string
+ *                 maxLength: 50
  *                 description: Código de barras único del producto
  *                 example: "1234567890123"
  *               categoryId:
@@ -335,9 +345,10 @@ router.get('/low-stock',
  *             $ref: '#/components/schemas/UpdateProductDto'
  *           examples:
  *             update_price:
- *               summary: Actualizar precio
+ *               summary: Actualizar precio y costo
  *               value:
  *                 price: 1099.99
+ *                 cost: 799.99
  *             update_stock:
  *               summary: Actualizar stock
  *               value:
@@ -349,6 +360,7 @@ router.get('/low-stock',
  *                 name: "iPhone 14 Pro Max"
  *                 description: "Smartphone Apple iPhone 14 Pro Max 256GB"
  *                 price: 1199.99
+ *                 cost: 899.99
  *                 stock: 30
  *                 minStock: 5
  *     responses:
@@ -487,7 +499,7 @@ router.delete('/:id',
  *     tags:
  *       - Products
  *     summary: Actualizar stock del producto
- *     description: Permite aumentar o disminuir el stock de un producto específico. Útil para movimientos de inventario.
+ *     description: Permite establecer, aumentar o disminuir el stock de un producto. Útil para movimientos de inventario, ajustes y correcciones.
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -506,30 +518,44 @@ router.delete('/:id',
  *           schema:
  *             type: object
  *             required:
- *               - quantity
+ *               - stock
  *               - operation
  *             properties:
- *               quantity:
+ *               stock:
  *                 type: integer
- *                 minimum: 1
- *                 description: Cantidad a modificar en el stock
+ *                 minimum: 0
+ *                 maximum: 999999
+ *                 description: Valor del stock (nuevo valor para 'set', cantidad para 'add'/'subtract')
  *                 example: 10
  *               operation:
  *                 type: string
- *                 enum: [add, subtract]
- *                 description: Tipo de operación a realizar
+ *                 enum: [set, add, subtract]
+ *                 description: "Tipo de operación: 'set' (establecer), 'add' (sumar), 'subtract' (restar)"
  *                 example: "add"
+ *               reason:
+ *                 type: string
+ *                 maxLength: 255
+ *                 description: Razón del cambio de stock (opcional)
+ *                 example: "Recepción de mercancía"
  *           examples:
+ *             set_stock:
+ *               summary: Establecer stock exacto (ajuste de inventario)
+ *               value:
+ *                 stock: 100
+ *                 operation: "set"
+ *                 reason: "Inventario físico realizado"
  *             add_stock:
  *               summary: Aumentar stock (entrada de mercancía)
  *               value:
- *                 quantity: 50
+ *                 stock: 50
  *                 operation: "add"
+ *                 reason: "Recepción de proveedor"
  *             subtract_stock:
  *               summary: Disminuir stock (venta o merma)
  *               value:
- *                 quantity: 5
+ *                 stock: 5
  *                 operation: "subtract"
+ *                 reason: "Venta directa"
  *     responses:
  *       200:
  *         description: Stock actualizado exitosamente
