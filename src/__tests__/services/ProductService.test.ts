@@ -247,7 +247,19 @@ describe('ProductService', () => {
   });
 
   describe('updateStock', () => {
-    it('should update stock successfully', async () => {
+    it('should update stock successfully with add operation', async () => {
+      // Arrange
+      const product = await createTestProduct(); // stock inicial: 50
+      
+      // Act
+      const result = await productService.updateStock(product.id, 25, 'add');
+
+      // Assert
+      expect(result).toBeDefined();
+      expect(result?.stock).toBe(75);
+    });
+
+    it('should update stock successfully with subtract operation', async () => {
       // Arrange
       const product = await createTestProduct(); // stock inicial: 50
       
@@ -257,6 +269,18 @@ describe('ProductService', () => {
       // Assert
       expect(result).toBeDefined();
       expect(result?.stock).toBe(25);
+    });
+
+    it('should update stock successfully with set operation', async () => {
+      // Arrange
+      const product = await createTestProduct(); // stock inicial: 50
+      
+      // Act
+      const result = await productService.updateStock(product.id, 100, 'set');
+
+      // Assert
+      expect(result).toBeDefined();
+      expect(result?.stock).toBe(100);
     });
 
     it('should throw error when updating stock of non-existent product', async () => {
@@ -272,6 +296,16 @@ describe('ProductService', () => {
       
       // Act & Assert
       await expect(productService.updateStock(product.id, 100, 'subtract'))
+        .rejects
+        .toThrow('Stock insuficiente');
+    });
+
+    it('should prevent setting negative stock', async () => {
+      // Arrange
+      const product = await createTestProduct();
+      
+      // Act & Assert
+      await expect(productService.updateStock(product.id, -10, 'set'))
         .rejects
         .toThrow('Stock insuficiente');
     });

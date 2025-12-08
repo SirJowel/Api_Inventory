@@ -16,7 +16,7 @@ const response = await fetch('https://apiinventory-production.up.railway.app/api
     nombre: 'Juan Pérez',
     email: 'juan@example.com',
     password: 'Password123!',
-    rol: 'user'
+    rol: 'user' // En API usa 'rol', mapea a 'role' internamente
   })
 });
 
@@ -28,7 +28,7 @@ interface CreateUserDto {
   nombre: string;
   email: string;
   password: string;
-  rol: 'admin' | 'editor' | 'user';
+  rol: 'admin' | 'manager' | 'user';
 }
 
 interface ApiResponse<T> {
@@ -194,7 +194,7 @@ request.body = {
   nombre: 'Juan Pérez',
   email: 'juan@example.com',
   password: 'Password123!',
-  rol: 'user'
+  rol: 'user' // En API usa 'rol', mapea a 'role' internamente
 }.to_json
 
 response = http.request(request)

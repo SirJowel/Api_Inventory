@@ -35,17 +35,17 @@ const userController = new UserController();
  *             user_example:
  *               summary: Ejemplo de usuario
  *               value:
- *                 nombre: "Juan Pérez"
+ *                 name: "Juan Pérez"
  *                 email: "juan@example.com"
  *                 password: "Password123!"
- *                 rol: "user"
+ *                 role: "user"
  *             admin_example:
  *               summary: Ejemplo de administrador
  *               value:
- *                 nombre: "Admin User"
+ *                 name: "Admin User"
  *                 email: "admin@example.com"
  *                 password: "AdminPass123!"
- *                 rol: "admin"
+ *                 role: "admin"
  *     responses:
  *       201:
  *         description: Usuario creado exitosamente
@@ -63,9 +63,9 @@ const userController = new UserController();
  *               message: "Usuario creado exitosamente"
  *               data:
  *                 id: "123e4567-e89b-12d3-a456-426614174000"
- *                 nombre: "Juan Pérez"
+ *                 name: "Juan Pérez"
  *                 email: "juan@example.com"
- *                 rol: "user"
+ *                 role: "user"
  *                 isActive: true
  *                 createdAt: "2025-09-21T10:30:00Z"
  *                 updatedAt: "2025-09-21T10:30:00Z"
@@ -137,9 +137,9 @@ router.post('/',
  *                 token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
  *                 user:
  *                   id: "123e4567-e89b-12d3-a456-426614174000"
- *                   nombre: "Juan Pérez"
+ *                   name: "Juan Pérez"
  *                   email: "juan@example.com"
- *                   rol: "user"
+ *                   role: "user"
  *                   isActive: true
  *       400:
  *         $ref: '#/components/responses/ValidationError'
@@ -231,9 +231,9 @@ router.post('/login',
  *               data:
  *                 data:
  *                   - id: "123e4567-e89b-12d3-a456-426614174000"
- *                     nombre: "Juan Pérez"
+ *                     name: "Juan Pérez"
  *                     email: "juan@example.com"
- *                     rol: "user"
+ *                     role: "user"
  *                     isActive: true
  *                     createdAt: "2025-09-21T10:30:00Z"
  *                     updatedAt: "2025-09-21T10:30:00Z"
@@ -270,7 +270,7 @@ router.get('/',
  *         required: true
  *         schema:
  *           type: string
- *           enum: [admin, editor, user]
+ *           enum: [admin, manager, user]
  *         description: Rol a filtrar
  *         example: "user"
  *       - in: query
@@ -359,9 +359,9 @@ router.get('/role/:rol',
  *               message: "Usuario obtenido exitosamente"
  *               data:
  *                 id: "123e4567-e89b-12d3-a456-426614174000"
- *                 nombre: "Juan Pérez"
+ *                 name: "Juan Pérez"
  *                 email: "juan@example.com"
- *                 rol: "user"
+ *                 role: "user"
  *                 isActive: true
  *                 createdAt: "2025-09-21T10:30:00Z"
  *                 updatedAt: "2025-09-21T10:30:00Z"
@@ -399,7 +399,7 @@ router.get('/role/:rol',
  *             update_name:
  *               summary: Actualizar solo nombre
  *               value:
- *                 nombre: "Juan Carlos Pérez"
+ *                 name: "Juan Carlos Pérez"
  *             update_email:
  *               summary: Actualizar email
  *               value:
@@ -407,13 +407,13 @@ router.get('/role/:rol',
  *             update_role:
  *               summary: Actualizar rol (solo admin)
  *               value:
- *                 rol: "editor"
+ *                 role: "editor"
  *             full_update:
  *               summary: Actualización completa
  *               value:
- *                 nombre: "Juan Carlos Pérez"
+ *                 name: "Juan Carlos Pérez"
  *                 email: "juan.carlos@example.com"
- *                 rol: "editor"
+ *                 role: "editor"
  *     responses:
  *       200:
  *         description: Usuario actualizado exitosamente
@@ -431,9 +431,9 @@ router.get('/role/:rol',
  *               message: "Usuario actualizado exitosamente"
  *               data:
  *                 id: "123e4567-e89b-12d3-a456-426614174000"
- *                 nombre: "Juan Carlos Pérez"
+ *                 name: "Juan Carlos Pérez"
  *                 email: "juan.carlos@example.com"
- *                 rol: "editor"
+ *                 role: "editor"
  *                 isActive: true
  *                 createdAt: "2025-09-21T10:30:00Z"
  *                 updatedAt: "2025-09-21T12:45:00Z"

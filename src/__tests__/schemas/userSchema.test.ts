@@ -6,7 +6,7 @@ describe('User Schemas', () => {
     it('should validate correct user data', () => {
       // Arrange
       const validUserData = {
-        nombre: 'Test User',
+        name: 'Test User',
         email: 'test@example.com',
         password: 'Password123!',
         rol: 'user'
@@ -27,7 +27,7 @@ describe('User Schemas', () => {
     it('should reject invalid email', () => {
       // Arrange
       const invalidUserData = {
-        nombre: 'Test User',
+        name: 'Test User',
         email: 'invalid-email',
         password: 'Password123!',
         rol: 'user'
@@ -53,7 +53,7 @@ describe('User Schemas', () => {
     it('should reject weak password', () => {
       // Arrange
       const invalidUserData = {
-        nombre: 'Test User',
+        name: 'Test User',
         email: 'test@example.com',
         password: '123',
         rol: 'user'
@@ -78,7 +78,7 @@ describe('User Schemas', () => {
     it('should reject invalid role', () => {
       // Arrange
       const invalidUserData = {
-        nombre: 'Test User',
+        name: 'Test User',
         email: 'test@example.com',
         password: 'Password123!',
         rol: 'invalid_role'
@@ -104,7 +104,7 @@ describe('User Schemas', () => {
       // Arrange
       const incompleteUserData = {
         email: 'test@example.com'
-        // Missing nombre, password, rol
+        // Missing name and password (rol is optional with default)
       };
 
       // Act
@@ -114,7 +114,7 @@ describe('User Schemas', () => {
       expect(result.success).toBe(false);
       if (!result.success) {
         const errorPaths = result.error.issues.map(e => e.path[0]);
-        expect(errorPaths).toContain('nombre');
+        expect(errorPaths).toContain('name');
         expect(errorPaths).toContain('password');
         // Note: 'rol' is optional and has a default value, so it won't appear in validation errors
       }
