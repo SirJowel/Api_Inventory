@@ -3,27 +3,6 @@ import { User } from '../entities/User';
 import { Product } from '../entities/Product';
 import { Category } from '../entities/Category';
 
-// Mock del RedisService para testing
-jest.mock('../services/RedisService', () => ({
-  redisService: {
-    get: jest.fn(),
-    set: jest.fn(),
-    del: jest.fn(),
-    exists: jest.fn(),
-    incr: jest.fn(),
-    expire: jest.fn(),
-    addToBlacklist: jest.fn(),
-    isTokenBlacklisted: jest.fn().mockResolvedValue(false),
-    connect: jest.fn(),
-    disconnect: jest.fn(),
-    isHealthy: jest.fn().mockReturnValue(true),
-    getClient: jest.fn().mockReturnValue({
-      keys: jest.fn().mockResolvedValue([]),
-      del: jest.fn().mockResolvedValue(0)
-    })
-  }
-}));
-
 // Base de datos de prueba en memoria
 export const testDataSource = new DataSource({
   type: 'sqlite',
@@ -44,11 +23,6 @@ process.env.DB_PORT = '5432';
 process.env.DB_USER = 'test';
 process.env.DB_PASSWORD = 'test';
 process.env.DB_NAME = 'test_db';
-process.env.REDIS_HOST = 'localhost';
-process.env.REDIS_PORT = '6379';
-process.env.REDIS_PASSWORD = '';
-process.env.RATE_LIMIT_MAX_REQUESTS = '100';
-process.env.RATE_LIMIT_WINDOW = '900';
 
 // Mock global para multer
 jest.mock('../middlewares/multer', () => ({

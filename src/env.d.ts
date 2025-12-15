@@ -11,11 +11,6 @@ declare namespace NodeJS {
     JWT_SECRET:string
     JWT_EXPIRES_IN:string
     JWT_ALGORITHM:string
-    REDIS_HOST:string
-    REDIS_PORT:string
-    REDIS_PASSWORD:string
-    RATE_LIMIT_MAX_REQUESTS:string
-    RATE_LIMIT_WINDOW:string
 
   }
 }

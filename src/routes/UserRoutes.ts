@@ -1,8 +1,6 @@
 import { Router } from 'express';
 import { UserController } from '../controllers/UserController';
 import { authenticateToken, authorizeRole, authorizeOwnerOrAdmin } from '../middlewares/auth';
-import { cacheMiddleware, invalidateCache } from '../middlewares/cache';
-import { rateLimitMiddleware, strictRateLimit, normalRateLimit } from '../middlewares/rateLimit';
 import { 
   validateBody, 
   validateParams, 
@@ -95,9 +93,7 @@ const userController = new UserController();
  *         $ref: '#/components/responses/ServerError'
  */
 router.post('/', 
-  strictRateLimit, // Rate limit estricto para registro
   validateBody(createUserSchema),
-  invalidateCache('cache:user*'), // Invalidar cache de usuarios
   userController.createUser
 );
 
@@ -167,7 +163,6 @@ router.post('/',
  *         $ref: '#/components/responses/ServerError'
  */
 router.post('/login', 
-  rateLimitMiddleware(20, 900), // 20 intentos de login en 15 min
   validateBody(loginSchema), 
   userController.login
 );
@@ -248,8 +243,6 @@ router.post('/login',
  */
 router.get('/', 
   authenticateToken,
-  normalRateLimit, // Rate limit normal para consultas
-  cacheMiddleware(300, 'cache:users'), // Cache de 5 minutos
   validateQuery(paginationSchema),
   userController.getAllUsers
 );
@@ -317,8 +310,6 @@ router.get('/',
 router.get('/role/:rol', 
   authenticateToken, 
   authorizeRole(['admin']),
-  normalRateLimit,
-  cacheMiddleware(600, 'cache:users:role'), // Cache de 10 minutos para roles
   validateQuery(paginationSchema),
   userController.getUsersByRole
 );
@@ -496,8 +487,6 @@ router.get('/role/:rol',
 router.get('/:id', 
   authenticateToken, 
   authorizeOwnerOrAdmin,
-  normalRateLimit,
-  cacheMiddleware(300, 'cache:user'), // Cache de 5 minutos por usuario
   validateParams(idParamSchema),
   userController.getUserById
 );
@@ -505,19 +494,15 @@ router.get('/:id',
 router.put('/:id', 
   authenticateToken, 
   authorizeOwnerOrAdmin,
-  strictRateLimit, // Rate limit estricto para modificaciones
   validateParams(idParamSchema),
   validateBody(updateUserSchema),
-  invalidateCache('cache:user*'), // Invalidar todo el cache de usuarios
   userController.updateUser
 );
 
 router.delete('/:id', 
   authenticateToken, 
   authorizeRole(['admin']),
-  strictRateLimit, // Rate limit estricto para eliminaciones
   validateParams(idParamSchema),
-  invalidateCache('cache:user*'), // Invalidar todo el cache de usuarios
   userController.deleteUser
 );
 

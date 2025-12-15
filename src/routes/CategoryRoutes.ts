@@ -1,7 +1,5 @@
 import { Router } from 'express';
 import { CategoryController } from '../controllers/CategoryController';
-import { cacheMiddleware, invalidateCache } from '../middlewares/cache';
-import { rateLimitMiddleware, strictRateLimit, normalRateLimit } from '../middlewares/rateLimit';
 import { 
   validateBody, 
   validateParams, 
@@ -159,15 +157,11 @@ const categoryController = new CategoryController();
  *         $ref: '#/components/responses/ServerError'
  */
 router.post('/', 
-  rateLimitMiddleware(30, 3600), // 30 categorías por hora
   validateBody(createCategorySchema),
-  invalidateCache('cache:categor*'), // Invalidar cache de categorías
   categoryController.createCategory
 );
 
 router.get('/', 
-  normalRateLimit,
-  cacheMiddleware(900, 'cache:categories'), // Cache de 15 minutos para lista de categorías
   validateQuery(paginationSchema.merge(categorySearchSchema)), 
   categoryController.getAllCategories
 );
@@ -227,8 +221,6 @@ router.get('/',
  *         $ref: '#/components/responses/ServerError'
  */
 router.get('/active', 
-  normalRateLimit,
-  cacheMiddleware(600, 'cache:categories:active'), // Cache de 10 minutos para categorías activas
   validateQuery(paginationSchema), 
   categoryController.getActiveCategories
 );
@@ -374,8 +366,6 @@ router.get('/active',
  *         $ref: '#/components/responses/ServerError'
  */
 router.get('/:id', 
-  normalRateLimit,
-  cacheMiddleware(600, 'cache:category'), // Cache de 10 minutos por categoría
   validateParams(uuidParamSchema), 
   categoryController.getCategoryById
 );
@@ -488,25 +478,19 @@ router.get('/:id',
  *         $ref: '#/components/responses/ServerError'
  */
 router.get('/:id/stats', 
-  normalRateLimit,
-  cacheMiddleware(300, 'cache:category:stats'), // Cache de 5 minutos para estadísticas
   validateParams(uuidParamSchema),
   validateQuery(categoryWithStatsSchema), 
   categoryController.getCategoryStats
 );
 
 router.put('/:id', 
-  strictRateLimit, // Rate limit estricto para modificaciones
   validateParams(uuidParamSchema),
   validateBody(updateCategorySchema),
-  invalidateCache('cache:categor*'), // Invalidar cache de categorías
   categoryController.updateCategory
 );
 
 router.delete('/:id', 
-  strictRateLimit, // Rate limit estricto para eliminaciones
   validateParams(uuidParamSchema),
-  invalidateCache('cache:categor*'), // Invalidar cache de categorías
   categoryController.deleteCategory
 );
 

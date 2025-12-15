@@ -52,23 +52,6 @@ const envSchema = z.object({
   JWT_ALGORITHM: z.enum(['HS256', 'HS384', 'HS512'], {
     message: 'JWT_ALGORITHM debe ser: HS256, HS384 o HS512'
   }).default('HS256')
-
-    // Redis configuration
-    ,
-    // Redis configuration
-    REDIS_HOST: z.string().default('localhost'),
-    REDIS_PORT: z.coerce.number().min(1).max(65535).default(6379),
-    REDIS_PASSWORD: z.string().optional(),
-    REDIS_DB: z.coerce.number().min(0).max(15).default(0),
-    
-    // Cache configuration
-    CACHE_TTL_PRODUCTS: z.coerce.number().default(300), // 5 minutes
-    CACHE_TTL_CATEGORIES: z.coerce.number().default(600), // 10 minutes
-    CACHE_TTL_USERS: z.coerce.number().default(900), // 15 minutes
-    
-    // Rate limiting
-    RATE_LIMIT_WINDOW: z.coerce.number().default(900), // 15 minutes
-    RATE_LIMIT_MAX_REQUESTS: z.coerce.number().default(100)
 });
 
 // Validate and parse environment variables

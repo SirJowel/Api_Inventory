@@ -6,7 +6,6 @@ import { apiReference } from '@scalar/express-api-reference';
 
 import { initializeDatabase } from './config/db';
 import { swaggerSpec } from "./config/swagger";
-import { redisService } from './services/RedisService';
 
 
 // Importar rutas
@@ -85,16 +84,13 @@ app.use('/api/users', userRoutes);
 
 // Ruta de prueba
 app.get('/api/health', (req, res) => {
-    const redisStatus = redisService.getStatus();
     res.json({ 
         success: true,
         message: 'API del Punto de Venta funcionando correctamente',
         timestamp: new Date().toISOString(),
         secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
         services: {
-            database: 'connected',
-            redis: redisStatus.connected ? 'connected' : 'using-memory-fallback',
-            cache: redisStatus.usingMemory ? 'memory' : 'redis'
+            database: 'connected'
         }
     });
 });
@@ -129,20 +125,6 @@ const startServer = async () => {
             console.log('⚠️  No hay migraciones pendientes o ya están aplicadas');
         }
 
-        // Intentar conectar Redis (no bloqueante)
-        console.log('🔄 Conectando a Redis...');
-        try {
-            await redisService.connect();
-            const status = redisService.getStatus();
-            if (status.connected) {
-                console.log('✅ Redis conectado');
-            } else if (status.usingMemory) {
-                console.log('💾 Usando cache en memoria (Redis no disponible)');
-            }
-        } catch (error) {
-            console.log('⚠️  Redis no disponible, usando cache en memoria');
-        }
-
         // Iniciar el servidor
         app.listen(PORT, () => {
             console.log('═══════════════════════════════════════════════════');
@@ -150,9 +132,6 @@ const startServer = async () => {
             console.log(`📍 API disponible en ${process.env.NODE_ENV === 'production' ? 'https' : 'http'}://localhost:${PORT}/api`);
             console.log(`📚 Documentación: ${process.env.NODE_ENV === 'production' ? 'https' : 'http'}://localhost:${PORT}/api-docs`);
             console.log(`🏥 Health check: ${process.env.NODE_ENV === 'production' ? 'https' : 'http'}://localhost:${PORT}/api/health`);
-            
-            const redisStatus = redisService.getStatus();
-            console.log(`💾 Cache: ${redisStatus.connected ? 'Redis' : 'Memoria'}`);
             console.log('═══════════════════════════════════════════════════');
         });
     } catch (error) {

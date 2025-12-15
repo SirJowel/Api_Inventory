@@ -1,8 +1,6 @@
 import { Router } from 'express';
 import { ProductController } from '../controllers/ProductController';
 import upload from '../middlewares/multer';
-import { cacheMiddleware, invalidateCache } from '../middlewares/cache';
-import { rateLimitMiddleware, strictRateLimit, normalRateLimit } from '../middlewares/rateLimit';
 import { 
   validateBody, 
   validateParams, 
@@ -215,17 +213,13 @@ const productController = new ProductController();
  *         $ref: '#/components/responses/ServerError'
  */
 router.post('/', 
-  rateLimitMiddleware(50, 3600), // 50 productos por hora
   upload.single('image'), 
   validateFile(fileUploadSchema),
   validateBody(createProductSchema),
-  invalidateCache('cache:product*'), // Invalidar cache de productos
   productController.createProduct
 );
 
 router.get('/', 
-  normalRateLimit,
-  cacheMiddleware(600, 'cache:products'), // Cache de 10 minutos para lista de productos
   validateQuery(paginationSchema.merge(productSearchSchema)), 
   productController.getAllProducts
 );
@@ -281,8 +275,6 @@ router.get('/',
  *         $ref: '#/components/responses/ServerError'
  */
 router.get('/low-stock', 
-  normalRateLimit,
-  cacheMiddleware(300, 'cache:products:low-stock'), // Cache de 5 minutos para stock bajo
   validateQuery(paginationSchema), 
   productController.getLowStockProducts
 );
@@ -419,8 +411,6 @@ router.get('/low-stock',
  *         $ref: '#/components/responses/ServerError'
  */
 router.get('/:id', 
-  normalRateLimit,
-  cacheMiddleware(600, 'cache:product'), // Cache de 10 minutos por producto
   validateParams(uuidParamSchema), 
   productController.getProductById
 );
@@ -471,24 +461,18 @@ router.get('/:id',
  *         $ref: '#/components/responses/ServerError'
  */
 router.get('/barcode/:barcode', 
-  normalRateLimit,
-  cacheMiddleware(300, 'cache:product:barcode'), // Cache de 5 minutos para búsqueda por código
   validateParams(barcodeParamSchema), 
   productController.getProductByBarcode
 );
 
 router.put('/:id', 
-  strictRateLimit, // Rate limit estricto para modificaciones
   validateParams(uuidParamSchema),
   validateBody(updateProductSchema),
-  invalidateCache('cache:product*'), // Invalidar cache de productos
   productController.updateProduct
 );
 
 router.delete('/:id', 
-  strictRateLimit, // Rate limit estricto para eliminaciones
   validateParams(uuidParamSchema),
-  invalidateCache('cache:product*'), // Invalidar cache de productos
   productController.deleteProduct
 );
 
@@ -613,10 +597,8 @@ router.delete('/:id',
  *         $ref: '#/components/responses/ServerError'
  */
 router.patch('/:id/stock', 
-  rateLimitMiddleware(200, 3600), // 200 actualizaciones de stock por hora
   validateParams(uuidParamSchema),
   validateBody(updateStockSchema),
-  invalidateCache('cache:product*'), // Invalidar cache por cambio de stock
   productController.updateStock
 );
 
